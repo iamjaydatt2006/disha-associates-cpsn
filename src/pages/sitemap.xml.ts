@@ -3,42 +3,28 @@ import { absoluteUrl } from "../data/site";
 import { guides } from "../data/guides";
 
 /**
- * Hand-rolled sitemap so no extra integration dependency is required.
- * Add a path here whenever a new indexable page is created.
+ * Simple sitemap containing only URLs with full XML support.
  * The 404 page and any noindex page must NOT be listed.
  */
-const pages: { path: string; priority: number; changefreq: string }[] = [
-  { path: "/", priority: 1.0, changefreq: "monthly" },
-  { path: "/architectural-model-making/", priority: 0.9, changefreq: "monthly" },
-  { path: "/residential-building-models/", priority: 0.8, changefreq: "monthly" },
-  { path: "/commercial-building-models/", priority: 0.8, changefreq: "monthly" },
-  { path: "/industrial-models/", priority: 0.8, changefreq: "monthly" },
-  { path: "/landscape-township-models/", priority: 0.8, changefreq: "monthly" },
-  { path: "/infrastructure-models/", priority: 0.8, changefreq: "monthly" },
-  { path: "/projects/", priority: 0.8, changefreq: "monthly" },
-  { path: "/guides/", priority: 0.7, changefreq: "monthly" },
-  ...guides.map((g) => ({
-    path: `/guides/${g.slug}/`,
-    priority: 0.6,
-    changefreq: "yearly",
-  })),
-  { path: "/contact/", priority: 0.7, changefreq: "monthly" },
-  { path: "/about/", priority: 0.6, changefreq: "yearly" },
-  { path: "/privacy-policy/", priority: 0.3, changefreq: "yearly" },
+const pages: string[] = [
+  "/",
+  "/architectural-model-making/",
+  "/residential-building-models/",
+  "/commercial-building-models/",
+  "/industrial-models/",
+  "/landscape-township-models/",
+  "/infrastructure-models/",
+  "/projects/",
+  "/guides/",
+  ...guides.map((g) => `/guides/${g.slug}/`),
+  "/contact/",
+  "/about/",
+  "/privacy-policy/",
 ];
 
 export const GET: APIRoute = () => {
-  const lastmod = new Date().toISOString().slice(0, 10);
-
   const body = pages
-    .map(
-      ({ path, priority, changefreq }) => `  <url>
-    <loc>${absoluteUrl(path)}</loc>
-    <lastmod>${lastmod}</lastmod>
-    <changefreq>${changefreq}</changefreq>
-    <priority>${priority.toFixed(1)}</priority>
-  </url>`,
-    )
+    .map((path) => `  <url><loc>${absoluteUrl(path)}</loc></url>`)
     .join("\n");
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

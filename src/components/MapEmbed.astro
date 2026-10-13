@@ -10,10 +10,13 @@ const { title = `Map showing the location of ${site.name} in ${site.address.loca
 
 <div class="map-embed">
   <iframe
-    src={site.mapsEmbedUrl}
-    title={title}
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d999.7704097557357!2d75.36841836214617!3d19.872775569184146!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdba3c0d2c395ff%3A0xf8f5f975c095c947!2sDisha%20Associates%20%E2%80%93%20Architectural%20Model%20Makers!5e1!3m2!1sen!2sin!4v1791874368681!5m2!1sen!2sin"
+    width="600"
+    height="450"
+    style="border:0;"
+    allowfullscreen=""
     loading="lazy"
-    referrerpolicy="no-referrer-when-downgrade"
-    allowfullscreen
+    referrerpolicy="strict-origin-when-cross-origin"
+    title={title}
   ></iframe>
 </div>
