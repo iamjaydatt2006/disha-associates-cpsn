@@ -1,0 +1,39 @@
+---
+import type { Faq } from "../data/faqs";
+
+interface Props {
+  faqs: Faq[];
+  title?: string;
+  eyebrow?: string;
+  id?: string;
+  headingLevel?: "h2" | "h3";
+}
+const {
+  faqs,
+  title = "Frequently asked questions",
+  eyebrow = "FAQs",
+  id = "faqs",
+  headingLevel = "h2",
+} = Astro.props;
+
+const Heading = headingLevel;
+---
+
+<section class="section" id={id} aria-labelledby={`${id}-heading`}>
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">{eyebrow}</p>
+      <Heading id={`${id}-heading`}>{title}</Heading>
+    </div>
+    <div class="faq-list">
+      {faqs.map((faq) => (
+        <details class="faq-item">
+          <summary>{faq.question}</summary>
+          <div class="faq-item__answer">
+            <p>{faq.answer}</p>
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>

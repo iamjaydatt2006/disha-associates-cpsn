@@ -1,0 +1,125 @@
+---
+import "../styles/global.css";
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Icon from "../components/Icon.astro";
+import { site, hasVerifiedContact } from "../data/site";
+
+interface Props {
+  title: string;
+  description: string;
+  path?: string;
+  image?: string;
+  type?: "website" | "article";
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown>[];
+  includeBusiness?: boolean;
+}
+
+const { title, description, path, image, type, noindex, jsonLd, includeBusiness } = Astro.props;
+
+const phone = site.contact.phone;
+const whatsapp = site.contact.whatsapp;
+const email = site.contact.email;
+---
+
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <BaseHead
+      title={title}
+      description={description}
+      path={path}
+      image={image}
+      type={type}
+      noindex={noindex}
+      jsonLd={jsonLd}
+      includeBusiness={includeBusiness}
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+
+    {hasVerifiedContact && (
+      <div class="contact-bar" aria-label="Quick contact">
+        <div class="contact-bar__inner">
+          {phone.verified && phone.value && (
+            <a href={`tel:${phone.value.replace(/[^+\d]/g, "")}`} class="contact-bar__link">
+              <Icon name="phone" size={20} /> Call
+            </a>
+          )}
+          {whatsapp.verified && whatsapp.value && (
+            <a
+              href={`https://wa.me/${whatsapp.value.replace(/[^\d]/g, "")}`}
+              class="contact-bar__link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Icon name="whatsapp" size={20} /> WhatsApp
+            </a>
+          )}
+          {email.verified && email.value && (
+            <a href={`mailto:${email.value}`} class="contact-bar__link">
+              <Icon name="mail" size={20} /> Email
+            </a>
+          )}
+        </div>
+      </div>
+    )}
+
+    <style>
+      .contact-bar {
+        display: none;
+      }
+      @media (max-width: 1023px) {
+        .contact-bar {
+          display: block;
+          position: fixed;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 90;
+          background: var(--charcoal);
+          border-top: 1px solid var(--gold);
+          box-shadow: 0 -6px 20px rgba(23, 28, 36, 0.25);
+          padding-bottom: env(safe-area-inset-bottom, 0);
+        }
+        .contact-bar__inner {
+          display: flex;
+          justify-content: center;
+          gap: 0.25rem;
+        }
+        .contact-bar__link {
+          flex: 1;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.45rem;
+          padding: 0.85rem 0.5rem;
+          min-height: 48px;
+          color: var(--warm-white);
+          text-decoration: none;
+          font-size: 0.9rem;
+          font-weight: 600;
+        }
+        .contact-bar__link:hover {
+          background: rgba(189, 139, 69, 0.18);
+        }
+        body {
+          padding-bottom: 3.6rem;
+        }
+      }
+      @media print {
+        .contact-bar {
+          display: none !important;
+        }
+      }
+    </style>
+  </body>
+</html>

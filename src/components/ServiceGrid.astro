@@ -1,0 +1,28 @@
+---
+import { services } from "../data/services";
+import ServiceCard from "./ServiceCard.astro";
+
+interface Props {
+  heading?: string;
+  eyebrow?: string;
+  intro?: string;
+}
+const {
+  heading = "Scale models for every kind of project",
+  eyebrow = "What we make",
+  intro,
+} = Astro.props;
+---
+
+<section class="section" aria-labelledby="services-heading">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">{eyebrow}</p>
+      <h2 id="services-heading">{heading}</h2>
+      {intro && <p class="lead" style="margin-top: 1rem;">{intro}</p>}
+    </div>
+    <div class="grid grid--3">
+      {services.map((service) => <ServiceCard service={service} />)}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,33 @@
+---
+interface Props {
+  heading?: string;
+  text?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  secondaryLabel?: string;
+  secondaryHref?: string;
+}
+const {
+  heading = "Bring Your Architectural Vision to Life",
+  text = "Discuss your project requirements with Disha Associates and request a customized architectural model-making quotation.",
+  ctaLabel = "Contact Disha Associates",
+  ctaHref = "/contact/#enquiry",
+  secondaryLabel,
+  secondaryHref,
+} = Astro.props;
+---
+
+<section class="section cta-band" aria-labelledby="cta-heading">
+  <div class="container cta-band__inner">
+    <div>
+      <h2 id="cta-heading" style="color: var(--warm-white);">{heading}</h2>
+      <p class="lead" style="color: rgba(248,247,243,0.85); max-width: 46ch;">{text}</p>
+    </div>
+    <div class="btn-group">
+      <a class="btn btn--primary btn--lg" href={ctaHref}>{ctaLabel}</a>
+      {secondaryLabel && secondaryHref && (
+        <a class="btn btn--on-dark btn--lg" href={secondaryHref}>{secondaryLabel}</a>
+      )}
+    </div>
+  </div>
+</section>

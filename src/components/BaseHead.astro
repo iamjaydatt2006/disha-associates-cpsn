@@ -1,0 +1,89 @@
+---
+import { site, absoluteUrl } from "../data/site";
+import { businessNode, websiteNode, webPageNode } from "../data/schema";
+
+interface Props {
+  /** Full <title> string, e.g. "About Disha Associates | ...". */
+  title: string;
+  /** Meta description (unique per page). */
+  description: string;
+  /** Route path used for the canonical URL. Defaults to the current path. */
+  path?: string;
+  /** Social share image path. */
+  image?: string;
+  /** Open Graph type. */
+  type?: "website" | "article";
+  /** Set true only for pages that must not be indexed. */
+  noindex?: boolean;
+  /** Extra JSON-LD nodes merged into the page @graph. */
+  jsonLd?: Record<string, unknown>[];
+  /** Include the shared business + website nodes (default true). */
+  includeBusiness?: boolean;
+}
+
+const {
+  title,
+  description,
+  path,
+  image = "/images/og-default.svg",
+  type = "website",
+  noindex = false,
+  jsonLd = [],
+  includeBusiness = true,
+} = Astro.props;
+
+const canonicalPath = path ?? Astro.url.pathname;
+const canonical = absoluteUrl(canonicalPath);
+const ogImage = image.startsWith("http") ? image : absoluteUrl(image);
+const robots = noindex
+  ? "noindex, nofollow"
+  : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
+
+const graph: Record<string, unknown>[] = [];
+if (includeBusiness) {
+  graph.push(businessNode(), websiteNode(), webPageNode({ path: canonicalPath, name: title, description }));
+}
+graph.push(...jsonLd);
+
+const jsonLdString = JSON.stringify({ "@context": "https://schema.org", "@graph": graph });
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="robots" content={robots} />
+<link rel="canonical" href={canonical} />
+
+<!-- Icons -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/logo.svg" />
+<meta name="theme-color" content="#15181E" />
+
+<!-- Open Graph -->
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:alt" content={`${site.name} — ${site.tagline}`} />
+<meta property="og:locale" content="en_IN" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<!-- Geo / place signals -->
+<meta name="geo.region" content="IN-MH" />
+<meta name="geo.placename" content={site.address.locality} />
+<meta name="geo.position" content={`${site.geo.latitude};${site.geo.longitude}`} />
+<meta name="ICBM" content={`${site.geo.latitude}, ${site.geo.longitude}`} />
+
+<link rel="sitemap" href="/sitemap.xml" />
+
+<script type="application/ld+json" set:html={jsonLdString} />

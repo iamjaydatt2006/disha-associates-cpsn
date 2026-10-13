@@ -1,0 +1,22 @@
+# Build output
+dist/
+# Astro generated types
+.astro/
+# Dependencies
+node_modules/
+# Logs
+npm-debug.log*
+# OS / editor
+.DS_Store
+*.log
+.vscode/
+.idea/
+# Local env
+.env
+.env.*
+!.env.example
+# Cloudflare / Wrangler
+.wrangler/
+# Local QA artifacts (Playwright MCP runs / screenshots)
+.playwright-mcp/
+/home-*.jpeg

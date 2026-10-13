@@ -1,0 +1,103 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import BenefitsList from "../components/BenefitsList.astro";
+import Workflow from "../components/Workflow.astro";
+import CtaBand from "../components/CtaBand.astro";
+import ServiceGrid from "../components/ServiceGrid.astro";
+import Icon from "../components/Icon.astro";
+import { capabilities } from "../data/benefits";
+import { site } from "../data/site";
+import { breadcrumbNode } from "../data/schema";
+
+const title = "About Disha Associates | Architectural Model Makers in Chhatrapati Sambhajinagar";
+const description =
+  "Disha Associates is an architectural model-making studio based in Chhatrapati Sambhajinagar (Aurangabad), Maharashtra, producing physical scale models for architects, builders, developers and consultants.";
+
+const jsonLd = [
+  breadcrumbNode([
+    { name: "Home", path: "/" },
+    { name: "About", path: "/about/" },
+  ]),
+];
+---
+
+<BaseLayout title={title} description={description} path="/about/" jsonLd={jsonLd}>
+  <PageHero
+    eyebrow="About us"
+    title="Architectural model makers based in Chhatrapati Sambhajinagar"
+    lead="Disha Associates is a model-making studio producing physical scale models for architecture, construction and real estate projects."
+    crumbs={[
+      { name: "Home", path: "/" },
+      { name: "About", path: "/about/" },
+    ]}
+  />
+
+  <section class="section">
+    <div class="container" style="max-width: 60rem;">
+      <div class="prose">
+        <p>
+          Disha Associates is an architectural model-making agency based in
+          {site.address.locality}, {site.address.region}. We build physical scale models
+          that help architects, builders, developers, construction companies and project
+          consultants present their work clearly — whether to a client, an approving
+          authority, an investor or the public.
+        </p>
+        <p>
+          A scale model is more than a miniature. It is a communication tool. It lets a
+          viewer understand massing, proportion, context and design intent in seconds, from
+          any angle. Our work is built around that idea: every model is made for a specific
+          purpose and finished to do that job well.
+        </p>
+
+        <h2>What we make</h2>
+        <p>
+          We produce models across the full range of project types, from a single residence
+          to a township master plan:
+        </p>
+        <ul>
+          {capabilities.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+        <p>
+          Because projects differ so much in scale and purpose, we treat every model as a
+          bespoke piece. The scale, level of detail, materials, finish and display base are
+          agreed with you before production begins.
+        </p>
+
+        <h2>How we work</h2>
+        <p>
+          We keep the process simple and transparent. You share your drawings and
+          requirements, we discuss scale and presentation goals, you receive a
+          project-specific quotation, and production starts once the scope is confirmed.
+          You deal directly with the people making your model.
+        </p>
+
+        <h2>Where we work</h2>
+        <p>
+          Our studio is in {site.address.locality} ({site.address.region}). We work with
+          clients across {site.address.region} and welcome enquiries from elsewhere in
+          India — get in touch with your project location and requirements.
+        </p>
+      </div>
+
+      <div class="btn-group" style="margin-top: 2rem;">
+        <a class="btn btn--primary btn--lg" href="/contact/#enquiry">Discuss Your Project</a>
+        <a class="btn btn--ghost btn--lg" href="/projects/">
+          View Our Work <Icon name="arrow-right" size={18} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <ServiceGrid
+    eyebrow="Our services"
+    heading="Scale models across every project type"
+    intro="From residential buildings to infrastructure, we make models for the full breadth of the built environment."
+  />
+
+  <BenefitsList />
+  <Workflow />
+  <CtaBand />
+</BaseLayout>

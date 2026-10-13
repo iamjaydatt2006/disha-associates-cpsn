@@ -1,0 +1,23 @@
+{
+  "name": "disha-associates",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static marketing website for Disha Associates — architectural scale model makers, Chhatrapati Sambhajinagar, Maharashtra.",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^5.13.0",
+    "three": "^0.169.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/three": "^0.169.0",
+    "typescript": "^5.9.3"
+  }
+}

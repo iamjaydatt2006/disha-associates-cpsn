@@ -1,0 +1,40 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import ProjectGrid from "../components/ProjectGrid.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { breadcrumbNode } from "../data/schema";
+
+const title = "Projects | Disha Associates Architectural Scale Models";
+const description =
+  "A selection of architectural scale model projects by Disha Associates in Chhatrapati Sambhajinagar (Aurangabad), Maharashtra — residential, commercial, industrial, landscape, township and infrastructure models.";
+
+const jsonLd = [
+  breadcrumbNode([
+    { name: "Home", path: "/" },
+    { name: "Projects", path: "/projects/" },
+  ]),
+];
+---
+
+<BaseLayout title={title} description={description} path="/projects/" jsonLd={jsonLd}>
+  <PageHero
+    eyebrow="Portfolio"
+    title="Selected Project Work"
+    lead="A selection of the architectural scale models we make for clients across Maharashtra."
+    crumbs={[
+      { name: "Home", path: "/" },
+      { name: "Projects", path: "/projects/" },
+    ]}
+  />
+
+  <ProjectGrid
+    eyebrow="Project portfolio"
+    heading="Models we have made"
+  />
+
+  <CtaBand
+    heading="Your project could be next"
+    text="Send us your drawings and requirements and we will advise on scale, detail and presentation."
+  />
+</BaseLayout>

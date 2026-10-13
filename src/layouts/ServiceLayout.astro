@@ -1,0 +1,117 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import FaqSection from "../components/FaqSection.astro";
+import BenefitsList from "../components/BenefitsList.astro";
+import Workflow from "../components/Workflow.astro";
+import CtaBand from "../components/CtaBand.astro";
+import RelatedGuides from "../components/RelatedGuides.astro";
+import Icon from "../components/Icon.astro";
+import { faqs } from "../data/faqs";
+import { serviceNode, breadcrumbNode, faqNode } from "../data/schema";
+
+interface Highlight {
+  title: string;
+  description: string;
+}
+
+interface Props {
+  h1: string;
+  seoTitle: string;
+  seoDescription: string;
+  path: string;
+  crumbLabel: string;
+  eyebrow: string;
+  lead: string;
+  image: string;
+  imageAlt: string;
+  /** Service name recorded in JSON-LD. */
+  serviceName: string;
+  highlights: Highlight[];
+  /** Indices into the shared FAQ list to display on this page. */
+  faqIndices?: number[];
+}
+
+const {
+  h1,
+  seoTitle,
+  seoDescription,
+  path,
+  crumbLabel,
+  eyebrow,
+  lead,
+  image,
+  imageAlt,
+  serviceName,
+  highlights,
+  faqIndices,
+} = Astro.props;
+
+const pageFaqs = faqIndices && faqIndices.length > 0 ? faqIndices.map((i) => faqs[i]) : faqs;
+
+const crumbs = [
+  { name: "Home", path: "/" },
+  { name: crumbLabel, path },
+];
+
+const jsonLd = [
+  serviceNode({ name: serviceName, description: seoDescription, path }),
+  breadcrumbNode(crumbs),
+  faqNode(pageFaqs),
+];
+---
+
+<BaseLayout title={seoTitle} description={seoDescription} path={path} image={image} jsonLd={jsonLd}>
+  <PageHero eyebrow={eyebrow} title={h1} lead={lead} crumbs={crumbs} />
+
+  <section class="section">
+    <div class="container">
+      <div class="grid grid--2" style="align-items: start; gap: clamp(1.75rem, 4vw, 3rem);">
+        <div class="prose">
+          <slot />
+        </div>
+        <figure style="margin: 0;">
+          <div class="card__media" style="border-radius: var(--radius-lg); border: 1px solid var(--line);">
+            <img src={image} width="1600" height="900" alt={imageAlt} loading="lazy" decoding="async" />
+          </div>
+          <figcaption class="field__hint" style="margin-top: 0.6rem;">
+            Placeholder image — replace with a real photograph of your work (OWNER-TODO).
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--gray" aria-labelledby="includes-heading">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">What this includes</p>
+        <h2 id="includes-heading">Scope of our {serviceName.toLowerCase()} service</h2>
+      </div>
+      <div class="grid grid--3">
+        {highlights.map((item) => (
+          <div class="feature">
+            <span class="feature__icon"><Icon name="check" size={20} /></span>
+            <div>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <BenefitsList
+    eyebrow="Why choose us"
+    heading={`Why clients choose Disha Associates for ${serviceName.toLowerCase()}`}
+  />
+
+  <Workflow />
+  <FaqSection faqs={pageFaqs} />
+  <RelatedGuides />
+  <CtaBand
+    heading={`Discuss your ${serviceName.toLowerCase()} project`}
+    text="Send us your drawings and requirements and we will advise on scale, detail and the most effective way to present your project."
+  />
+</BaseLayout>

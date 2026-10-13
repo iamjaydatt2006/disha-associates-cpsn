@@ -1,0 +1,78 @@
+---
+interface Props {
+  poster?: string;
+  label?: string;
+  caption?: string;
+}
+
+const {
+  poster = "/images/hero.svg",
+  label = "Interactive 3D model of a multi-storey building on an architectural site base",
+  caption = "Interactive illustrative model — not a client commission.",
+} = Astro.props;
+---
+
+<figure class="hero3d" data-hero3d data-state="loading">
+  <canvas
+    class="hero3d__canvas"
+    data-hero-canvas
+    role="img"
+    aria-label={label}
+  ></canvas>
+  <img
+    class="hero3d__fallback"
+    src={poster}
+    alt=""
+    width="800"
+    height="600"
+    loading="lazy"
+    decoding="async"
+  />
+  <div class="hero3d__loader" role="status" aria-live="polite">
+    <span class="hero3d__spinner" aria-hidden="true"></span>
+    <span>Loading model…</span>
+  </div>
+  <div class="hero3d__controls">
+    <span class="hero3d__hint">Drag to explore</span>
+    <button class="hero3d__btn" type="button" data-hero-reset>Reset view</button>
+  </div>
+</figure>
+<p class="hero3d__caption">{caption}</p>
+
+<script>
+  const roots = document.querySelectorAll<HTMLElement>("[data-hero3d]");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const supportsWebGL = () => {
+    try {
+      const c = document.createElement("canvas");
+      return !!(
+        window.WebGLRenderingContext &&
+        (c.getContext("webgl2") || c.getContext("webgl"))
+      );
+    } catch {
+      return false;
+    }
+  };
+
+  roots.forEach((root) => {
+    if (!supportsWebGL()) {
+      root.dataset.state = "fallback";
+      return;
+    }
+
+    import("../scripts/model-scene")
+      .then(({ mountModelScene }) => {
+        const handle = mountModelScene(root, { reducedMotion: reduced });
+        requestAnimationFrame(() => {
+          root.dataset.state = "ready";
+        });
+        const resetBtn = root.querySelector("[data-hero-reset]");
+        resetBtn?.addEventListener("click", () => handle.reset());
+        window.addEventListener("pagehide", () => handle.dispose(), { once: true });
+      })
+      .catch(() => {
+        root.dataset.state = "fallback";
+      });
+  });
+</script>

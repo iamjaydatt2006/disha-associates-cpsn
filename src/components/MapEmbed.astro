@@ -1,0 +1,19 @@
+---
+import { site } from "../data/site";
+
+interface Props {
+  /** Accessible title for the iframe (required). */
+  title?: string;
+}
+const { title = `Map showing the location of ${site.name} in ${site.address.locality}` } = Astro.props;
+---
+
+<div class="map-embed">
+  <iframe
+    src={site.mapsEmbedUrl}
+    title={title}
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"
+    allowfullscreen
+  ></iframe>
+</div>

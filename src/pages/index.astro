@@ -1,0 +1,137 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero3D from "../components/Hero3D.astro";
+import ServiceGrid from "../components/ServiceGrid.astro";
+import BenefitsList from "../components/BenefitsList.astro";
+import Workflow from "../components/Workflow.astro";
+import ProjectGrid from "../components/ProjectGrid.astro";
+import FaqSection from "../components/FaqSection.astro";
+import CtaBand from "../components/CtaBand.astro";
+import RelatedGuides from "../components/RelatedGuides.astro";
+import Icon from "../components/Icon.astro";
+import { capabilities } from "../data/benefits";
+import { faqs } from "../data/faqs";
+import { faqNode } from "../data/schema";
+import { site } from "../data/site";
+
+const title =
+  "Architectural Model Makers in Chhatrapati Sambhajinagar | Disha Associates";
+const description =
+  "Disha Associates is an architectural model-making studio in Chhatrapati Sambhajinagar (Aurangabad), Maharashtra. We build physical scale models of residential, commercial, industrial, landscape, township and infrastructure projects for presentations and client approvals.";
+
+const jsonLd = [faqNode(faqs)];
+---
+
+<BaseLayout title={title} description={description} path="/" image="/images/hero.svg" jsonLd={jsonLd}>
+  <section class="hero">
+    <div class="hero__glow" aria-hidden="true"></div>
+    <div class="container">
+      <div class="hero__grid">
+        <div class="hero__content">
+          <p class="eyebrow">Architectural model makers</p>
+          <p class="hero__kicker">From Architectural Vision to Physical Reality</p>
+          <h1>Architectural Scale Model Making in Chhatrapati Sambhajinagar</h1>
+          <p class="lead">
+            Detailed physical scale models for architectural presentations,
+            construction projects and real estate developments — built to be seen,
+            discussed and understood.
+          </p>
+          <div class="btn-group">
+            <a class="btn btn--primary btn--lg" href="/contact/#enquiry">Request a Quote</a>
+            <a class="btn btn--on-dark btn--lg" href="/projects/">Explore Our Projects</a>
+          </div>
+          <ul class="hero__points">
+            <li>Residential, commercial &amp; industrial</li>
+            <li>Scale agreed to suit your presentation</li>
+            <li>Studio in {site.address.locality}</li>
+          </ul>
+        </div>
+        <div class="hero__visual">
+          <Hero3D />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="trust-strip" aria-label="How we work">
+    <div class="container">
+      <div class="trust-strip__inner">
+        <div class="trust-item">
+          <span class="trust-item__icon"><Icon name="building" size={22} /></span>
+          <div>
+            <strong>Every building type</strong>
+            <span>Residential, commercial, industrial, landscape and infrastructure models.</span>
+          </div>
+        </div>
+        <div class="trust-item">
+          <span class="trust-item__icon"><Icon name="scale" size={22} /></span>
+          <div>
+            <strong>Scale agreed with you</strong>
+            <span>Chosen to suit the presentation, level of detail and display space.</span>
+          </div>
+        </div>
+        <div class="trust-item">
+          <span class="trust-item__icon"><Icon name="map-pin" size={22} /></span>
+          <div>
+            <strong>A local studio</strong>
+            <span>Based in Chhatrapati Sambhajinagar, working with clients across India.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="intro-heading">
+    <div class="container split">
+      <div>
+        <p class="eyebrow">What we do</p>
+        <h2 id="intro-heading">Physical models that bring projects to life</h2>
+        <p class="lead">
+          Disha Associates makes detailed physical scale models that turn drawings
+          and renders into something an audience can see, walk around and understand.
+        </p>
+        <p>
+          From a single home to a full township master plan, we build each model to
+          suit the presentation in front of you — sales offices, client approvals,
+          investor meetings and public consultations.
+        </p>
+        <div class="btn-group">
+          <a class="btn btn--primary" href="/contact/#enquiry">Request a Quote</a>
+          <a class="btn" href="/architectural-model-making/">Explore our services</a>
+        </div>
+      </div>
+      <div>
+        <ul class="checklist">
+          {capabilities.map((item) => (
+            <li>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <ServiceGrid
+    intro="From a single home to a full township master plan, we make physical models for the presentation you need."
+  />
+
+  <BenefitsList />
+
+  <Workflow />
+
+  <ProjectGrid
+    limit={3}
+    heading="A look at the kind of work we produce"
+    eyebrow="Our work"
+  />
+
+  <RelatedGuides
+    heading="New to architectural models? Start here"
+    eyebrow="Guides"
+  />
+
+  <FaqSection faqs={faqs} />
+
+  <CtaBand />
+</BaseLayout>

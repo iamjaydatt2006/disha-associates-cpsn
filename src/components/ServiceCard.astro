@@ -1,0 +1,31 @@
+---
+import type { ServiceCard as Service } from "../data/services";
+
+interface Props {
+  service: Service;
+}
+const { service } = Astro.props;
+---
+
+<article class="card">
+  <div class="card__media-wrap">
+    {!service.confirmed && <span class="card__badge">Owner review pending</span>}
+    <div class="card__media">
+      <img
+        src={service.image}
+        width="1600"
+        height="900"
+        alt={service.imageAlt}
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  </div>
+  <div class="card__body">
+    <h3>{service.title}</h3>
+    <p>{service.summary}</p>
+    <a class="card__link" href={service.href}>
+      View service <span class="visually-hidden">: {service.title}</span>
+    </a>
+  </div>
+</article>

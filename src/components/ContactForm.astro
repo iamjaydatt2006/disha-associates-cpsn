@@ -1,0 +1,233 @@
+---
+import { services } from "../data/services";
+import { formConfig } from "../data/form";
+
+const options = [
+  "Architectural Model Making",
+  ...services.filter((s) => s.href !== "/architectural-model-making/").map((s) => s.navLabel),
+  "Other / not listed",
+];
+---
+
+<div class="form-wrap">
+  {formConfig.mode === "disabled" && (
+    <p class="notice notice--warning" role="note">
+      <strong>Note for the site owner:</strong> the enquiry form is not yet connected to a
+      delivery service, so submissions cannot be sent. Configure form delivery in
+      <code>src/data/form.ts</code> (see README) to enable it. Visitors can still use the
+      contact details listed above.
+    </p>
+  )}
+
+  <form
+    class="enquiry-form"
+    id="enquiry-form"
+    novalidate
+    data-mode={formConfig.mode}
+    data-endpoint={formConfig.endpoint}
+    data-access-key={formConfig.accessKey}
+    data-to-email={formConfig.toEmail}
+    data-msg-success={formConfig.successMessage}
+    data-msg-mailto={formConfig.mailtoMessage}
+    data-msg-disabled={formConfig.disabledMessage}
+    method="post"
+    action={formConfig.mode === "endpoint" ? formConfig.endpoint : undefined}
+  >
+    <div class="form-row">
+      <div class="field">
+        <label for="f-name">Full name <span class="req" aria-hidden="true">*</span></label>
+        <input id="f-name" name="name" type="text" autocomplete="name" required
+          aria-describedby="e-name" />
+        <p class="field__error" id="e-name" data-error></p>
+      </div>
+      <div class="field">
+        <label for="f-company">Company / firm</label>
+        <input id="f-company" name="company" type="text" autocomplete="organization" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="field">
+        <label for="f-email">Email address <span class="req" aria-hidden="true">*</span></label>
+        <input id="f-email" name="email" type="email" autocomplete="email" required
+          aria-describedby="e-email" />
+        <p class="field__error" id="e-email" data-error></p>
+      </div>
+      <div class="field">
+        <label for="f-phone">Phone / WhatsApp</label>
+        <input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="field">
+        <label for="f-type">Project type</label>
+        <select id="f-type" name="projectType">
+          <option value="">Select a project type…</option>
+          {options.map((o) => <option value={o}>{o}</option>)}
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-location">Project location</label>
+        <input id="f-location" name="location" type="text" placeholder="City / area" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="f-requirements">Project requirements <span class="req" aria-hidden="true">*</span></label>
+      <textarea id="f-requirements" name="requirements" rows="5" required
+        aria-describedby="e-requirements h-requirements"
+        placeholder="Tell us about the project: model type, scale, size, deadline, and what you need the model to communicate."></textarea>
+      <p class="field__hint" id="h-requirements">Include scale, approximate size and any deadline if known.</p>
+      <p class="field__error" id="e-requirements" data-error></p>
+    </div>
+
+    <div class="field">
+      <label for="f-link">Link to drawings or reference files (optional)</label>
+      <input id="f-link" name="fileLink" type="url" inputmode="url"
+        placeholder="Google Drive / Dropbox / WeTransfer link" aria-describedby="h-link" />
+      <p class="field__hint" id="h-link">Share a link rather than attaching large files to this form.</p>
+    </div>
+
+    <!-- Honeypot: hidden from users; bots that fill it are ignored. -->
+    <div class="hp-field" aria-hidden="true">
+      <label for="f-website">Leave this field empty</label>
+      <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn--primary btn--lg" type="submit">Send Enquiry</button>
+      <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+    </div>
+  </form>
+</div>
+
+<script>
+  (() => {
+    const form = document.getElementById("enquiry-form") as HTMLFormElement | null;
+    if (!form) return;
+    const status = document.getElementById("form-status") as HTMLElement | null;
+
+    const setError = (input: HTMLElement, message: string) => {
+      const group = input.closest(".field");
+      const err = group?.querySelector("[data-error]") as HTMLElement | null;
+      if (err) err.textContent = message;
+      input.setAttribute("aria-invalid", message ? "true" : "false");
+      return !message;
+    };
+
+    const validators: Record<string, (v: string) => string> = {
+      name: (v) => (v.trim().length < 2 ? "Please enter your name." : ""),
+      email: (v) =>
+        /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim())
+          ? ""
+          : "Please enter a valid email address.",
+      requirements: (v) =>
+        v.trim().length < 10 ? "Please describe your project requirements (a little more detail helps)." : "",
+    };
+
+    const validate = (): boolean => {
+      let ok = true;
+      let firstInvalid: HTMLElement | null = null;
+      for (const [name, fn] of Object.entries(validators)) {
+        const input = form.elements.namedItem(name) as HTMLInputElement | null;
+        if (!input) continue;
+        const passed = setError(input, fn(input.value));
+        if (!passed && !firstInvalid) firstInvalid = input;
+        ok = ok && passed;
+      }
+      if (firstInvalid) firstInvalid.focus();
+      return ok;
+    };
+
+    (["name", "email", "requirements"] as const).forEach((name) => {
+      const input = form.elements.namedItem(name) as HTMLInputElement | null;
+      input?.addEventListener("blur", () => {
+        const fn = validators[name];
+        if (fn) setError(input, fn(input.value));
+      });
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (status) status.className = "form-status";
+
+      const honeypot = form.elements.namedItem("website") as HTMLInputElement | null;
+      if (honeypot && honeypot.value.trim() !== "") return; // silently drop bots
+
+      if (!validate()) return;
+
+      const mode = form.dataset.mode;
+      const data = new FormData(form);
+
+      if (mode === "disabled") {
+        if (status) {
+          status.textContent = form.dataset.msgDisabled || "";
+          status.classList.add("form-status--warn");
+        }
+        return;
+      }
+
+      if (mode === "mailto") {
+        const to = form.dataset.toEmail || "";
+        if (!to) {
+          if (status) {
+            status.textContent = form.dataset.msgDisabled || "";
+            status.classList.add("form-status--warn");
+          }
+          return;
+        }
+        const lines = [
+          `Name: ${data.get("name")}`,
+          `Company: ${data.get("company")}`,
+          `Email: ${data.get("email")}`,
+          `Phone: ${data.get("phone")}`,
+          `Project type: ${data.get("projectType")}`,
+          `Location: ${data.get("location")}`,
+          `File link: ${data.get("fileLink")}`,
+          "",
+          "Requirements:",
+          String(data.get("requirements") || ""),
+        ];
+        const subject = encodeURIComponent(
+          `Model-making enquiry from ${data.get("name") || "website visitor"}`,
+        );
+        const body = encodeURIComponent(lines.join("\n"));
+        window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+        if (status) {
+          status.textContent = form.dataset.msgMailto || "";
+          status.classList.add("form-status--ok");
+        }
+        return;
+      }
+
+      // mode === "endpoint"
+      const accessKey = form.dataset.accessKey;
+      if (accessKey) data.append("access_key", accessKey);
+      const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+      submitBtn?.setAttribute("disabled", "true");
+
+      try {
+        const res = await fetch(form.dataset.endpoint || "", {
+          method: "POST",
+          body: data,
+          headers: { Accept: "application/json" },
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        if (status) {
+          status.textContent = form.dataset.msgSuccess || "";
+          status.classList.add("form-status--ok");
+        }
+        form.reset();
+      } catch {
+        if (status) {
+          status.textContent =
+            "Something went wrong while sending your enquiry. Please try again, or contact us using the details on this page.";
+          status.classList.add("form-status--error");
+        }
+      } finally {
+        submitBtn?.removeAttribute("disabled");
+      }
+    });
+  })();
+</script>

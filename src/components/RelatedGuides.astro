@@ -1,0 +1,44 @@
+---
+import { guides } from "../data/guides";
+
+interface Props {
+  /** Optional subset of guide slugs; defaults to the newest three. */
+  slugs?: string[];
+  heading?: string;
+  eyebrow?: string;
+}
+
+const { slugs, heading = "Related guides", eyebrow = "Guides" } = Astro.props;
+
+const list =
+  slugs && slugs.length > 0
+    ? slugs
+        .map((s) => guides.find((g) => g.slug === s))
+        .filter((g): g is (typeof guides)[number] => Boolean(g))
+    : [...guides].sort((a, b) => b.updated.localeCompare(a.updated)).slice(0, 3);
+---
+
+<section class="section" aria-labelledby="related-guides-heading">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">{eyebrow}</p>
+      <h2 id="related-guides-heading">{heading}</h2>
+    </div>
+    <div class="grid grid--3">
+      {list.map((g) => (
+        <article class="card">
+          <div class="card__body">
+            <h3 style="font-size: 1.1rem;">{g.title}</h3>
+            <p>{g.summary}</p>
+            <a class="card__link" href={`/guides/${g.slug}/`}>
+              Read the guide <span class="visually-hidden">: {g.title}</span>
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+    <p style="margin-top: 1.5rem;">
+      <a href="/guides/">See all model-making guides <span aria-hidden="true">→</span></a>
+    </p>
+  </div>
+</section>

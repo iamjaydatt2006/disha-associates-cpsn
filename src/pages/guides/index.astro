@@ -1,0 +1,70 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import CtaBand from "../../components/CtaBand.astro";
+import { guides } from "../../data/guides";
+import { breadcrumbNode, articleNode } from "../../data/schema";
+
+const title = "Architectural Model Making Guides | Disha Associates";
+const description =
+  "Practical guides to architectural scale models from Disha Associates — what a scale model is, how to choose a model scale and what affects the cost of a physical model.";
+
+const path = "/guides/";
+const crumbs = [
+  { name: "Home", path: "/" },
+  { name: "Guides", path: "/guides/" },
+];
+
+const sorted = [...guides].sort((a, b) => b.updated.localeCompare(a.updated));
+
+const jsonLd = [
+  breadcrumbNode(crumbs),
+  ...sorted.map((g) =>
+    articleNode({
+      path: `/guides/${g.slug}/`,
+      headline: g.title,
+      description: g.description,
+      dateModified: g.updated,
+      image: "/images/og-default.svg",
+    }),
+  ),
+];
+---
+
+<BaseLayout title={title} description={description} path={path} jsonLd={jsonLd}>
+  <PageHero
+    eyebrow="Guides & help"
+    title="Architectural model-making guides"
+    lead="Straightforward, no-jargon guides to physical scale models — written to help you plan a model, choose a scale and brief a model maker with confidence."
+    crumbs={crumbs}
+  />
+
+  <section class="section">
+    <div class="container">
+      <div class="grid grid--2">
+        {sorted.map((guide) => (
+          <article class="card">
+            <div class="card__body">
+              <p class="eyebrow">{guide.eyebrow} · {guide.readingMinutes} min read</p>
+              <h2 style="font-size: 1.25rem;">{guide.title}</h2>
+              <p>{guide.summary}</p>
+              <a class="card__link" href={`/guides/${guide.slug}/`}>
+                Read the guide <span class="visually-hidden">: {guide.title}</span>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <p style="margin-top: 2rem;">
+        Looking for something specific? <a href="/contact/#enquiry">Send us your question</a>
+        and we will point you in the right direction.
+      </p>
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Ready to talk about your model?"
+    text="Share your drawings and requirements and we will advise on scale, detail and the most effective way to present your project."
+  />
+</BaseLayout>

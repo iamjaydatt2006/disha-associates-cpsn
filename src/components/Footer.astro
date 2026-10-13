@@ -1,0 +1,70 @@
+---
+import { site } from "../data/site";
+import { services } from "../data/services";
+import Icon from "./Icon.astro";
+
+const year = new Date().getFullYear();
+const phone = site.contact.phone;
+const email = site.contact.email;
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img class="footer-brand__logo" src="/logo.svg" width="52" height="52" alt={`${site.name} logo`} />
+        <h2>{site.name}</h2>
+        <p style="max-width: 30ch; font-size: 0.92rem;">
+          {site.descriptor}
+        </p>
+      </div>
+
+      <div>
+        <h3>Company</h3>
+        <ul>
+          <li><a href="/about/">About Us</a></li>
+          <li><a href="/projects/">Project Portfolio</a></li>
+          <li><a href="/guides/">Guides</a></li>
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/privacy-policy/">Privacy Policy</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Services</h3>
+        <ul>
+          <li><a href="/architectural-model-making/">Architectural Model Making</a></li>
+          {services.filter((s) => s.href !== "/architectural-model-making/").map((s) => (
+            <li><a href={s.href}>{s.navLabel}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h3>Studio</h3>
+        <address class="nap" style="font-size: 0.9rem;">
+          <span>{site.address.street},<br />{site.address.locality}, {site.address.region} {site.address.postalCode}, {site.address.country}</span>
+          {phone.verified && phone.value ? (
+            <a href={`tel:${phone.value.replace(/[^+\d]/g, "")}`}>
+              <Icon name="phone" size={16} /> {phone.value}
+            </a>
+          ) : null}
+          {email.verified && email.value ? (
+            <a href={`mailto:${email.value}`}>
+              <Icon name="mail" size={16} /> {email.value}
+            </a>
+          ) : null}
+          <a href={site.mapsDirectionsUrl} target="_blank" rel="noopener noreferrer">
+            <Icon name="map-pin" size={16} /> Get directions
+          </a>
+        </address>
+        <a class="btn btn--primary" href="/contact/#enquiry" style="margin-top: 1rem;">Request a Quote</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© {year} {site.name}. All rights reserved.</p>
+      <p>{site.address.locality}, {site.address.region}, {site.address.country} · Plus Code {site.geo.plusCode}</p>
+    </div>
+  </div>
+</footer>

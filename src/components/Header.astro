@@ -1,0 +1,149 @@
+---
+import { site } from "../data/site";
+import { services } from "../data/services";
+import Icon from "./Icon.astro";
+
+const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const isCurrent = (href: string) => {
+  const h = href.replace(/\/+$/, "") || "/";
+  return path === h;
+};
+const inServices = services.some((s) => isCurrent(s.href)) || isCurrent("/architectural-model-making");
+---
+
+<header class="site-header" id="top">
+  <div class="container site-header__inner">
+    <a class="brand" href="/" aria-label={`${site.name} — home`}>
+      <img class="brand__logo" src="/logo.svg" width="44" height="44" alt="" />
+      <span class="brand__text">
+        <span class="brand__name">{site.name}</span>
+        <span class="brand__sub">Architectural Models</span>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="Primary">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="/" aria-current={isCurrent("/") ? "page" : undefined}>Home</a></li>
+        <li><a class="nav__link" href="/about/" aria-current={isCurrent("/about/") ? "page" : undefined}>About</a></li>
+        <li class="nav__item--has-menu">
+          <button
+            class="nav__toggle"
+            type="button"
+            id="services-toggle"
+            aria-expanded="false"
+            aria-controls="services-menu"
+            data-current={inServices ? "true" : "false"}
+          >
+            Services
+            <Icon name="chevron-down" size={16} />
+          </button>
+          <ul class="nav__menu" id="services-menu" aria-labelledby="services-toggle" hidden>
+            <li><a href="/architectural-model-making/">Architectural Model Making<span>Overview of our model-making service</span></a></li>
+            {services.filter((s) => s.href !== "/architectural-model-making/").map((s) => (
+              <li><a href={s.href}>{s.navLabel}<span>{s.title}</span></a></li>
+            ))}
+          </ul>
+        </li>
+        <li><a class="nav__link" href="/projects/" aria-current={isCurrent("/projects/") ? "page" : undefined}>Projects</a></li>
+        <li><a class="nav__link" href="/guides/" aria-current={path.startsWith("/guides") ? "page" : undefined}>Guides</a></li>
+        <li><a class="nav__link" href="/contact/" aria-current={isCurrent("/contact/") ? "page" : undefined}>Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <a class="btn btn--primary header__cta" href="/contact/#enquiry">Request a Quote</a>
+      <button
+        class="nav__burger"
+        type="button"
+        id="mobile-toggle"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        aria-label="Open menu"
+      >
+        <Icon name="menu" size={26} />
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-nav" id="mobile-nav" hidden>
+    <div class="container mobile-nav__inner">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about/">About Us</a></li>
+        <li><a href="/projects/">Projects</a></li>
+        <li><a href="/guides/">Guides</a></li>
+      </ul>
+      <p class="mobile-nav__group-label">Services</p>
+      <ul>
+        <li><a href="/architectural-model-making/">Architectural Model Making</a></li>
+        {services.filter((s) => s.href !== "/architectural-model-making/").map((s) => (
+          <li><a href={s.href}>{s.navLabel}</a></li>
+        ))}
+      </ul>
+      <ul>
+        <li><a href="/contact/">Contact Us</a></li>
+      </ul>
+      <a class="btn btn--primary btn--block" href="/contact/#enquiry">Request a Project Quote</a>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Accessible disclosure menu + mobile navigation.
+  (() => {
+    const toggle = document.getElementById("services-toggle") as HTMLButtonElement | null;
+    const menu = document.getElementById("services-menu") as HTMLElement | null;
+    const burger = document.getElementById("mobile-toggle") as HTMLButtonElement | null;
+    const panel = document.getElementById("mobile-nav") as HTMLElement | null;
+
+    const closeServices = () => {
+      if (!toggle || !menu) return;
+      toggle.setAttribute("aria-expanded", "false");
+      menu.hidden = true;
+    };
+
+    toggle?.addEventListener("click", () => {
+      const open = toggle.getAttribute("aria-expanded") === "true";
+      toggle.setAttribute("aria-expanded", String(!open));
+      if (menu) menu.hidden = open;
+    });
+
+    const setPanel = (open: boolean) => {
+      if (!burger || !panel) return;
+      burger.setAttribute("aria-expanded", String(open));
+      burger.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      panel.hidden = !open;
+    };
+
+    burger?.addEventListener("click", () => {
+      setPanel(burger.getAttribute("aria-expanded") !== "true");
+    });
+
+    document.addEventListener("click", (e) => {
+      const t = e.target as Node;
+      if (toggle && menu && !toggle.contains(t) && !menu.contains(t)) closeServices();
+      if (burger && panel && !burger.contains(t) && !panel.contains(t)) setPanel(false);
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
+      if (toggle?.getAttribute("aria-expanded") === "true") {
+        closeServices();
+        toggle.focus();
+      }
+      if (burger?.getAttribute("aria-expanded") === "true") {
+        setPanel(false);
+        burger.focus();
+      }
+    });
+
+    // Reset transient UI when resizing to the desktop layout.
+    const mq = window.matchMedia("(min-width: 1024px)");
+    mq.addEventListener("change", (ev) => {
+      if (ev.matches) {
+        closeServices();
+        setPanel(false);
+      }
+    });
+  })();
+</script>

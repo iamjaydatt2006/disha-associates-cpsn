@@ -1,0 +1,30 @@
+---
+import { workflow } from "../data/workflow";
+
+interface Props {
+  heading?: string;
+  eyebrow?: string;
+  dark?: boolean;
+}
+const { heading = "How a model comes together", eyebrow = "Our process", dark = false } = Astro.props;
+---
+
+<section class:list={["section", dark && "section--dark"]} aria-labelledby="process-heading">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">{eyebrow}</p>
+      <h2 id="process-heading">{heading}</h2>
+      <p class="lead" style="margin-top: 1rem;">
+        A simple, transparent sequence from first enquiry to final delivery.
+      </p>
+    </div>
+    <ol class="workflow">
+      {workflow.map((step) => (
+        <li>
+          <h3>{step.title}</h3>
+          <p>{step.description}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

@@ -1,0 +1,68 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import NapBlock from "../components/NapBlock.astro";
+import MapEmbed from "../components/MapEmbed.astro";
+import ContactForm from "../components/ContactForm.astro";
+import Icon from "../components/Icon.astro";
+import { site, hasVerifiedContact } from "../data/site";
+import { breadcrumbNode } from "../data/schema";
+
+const title = "Contact Disha Associates | Architectural Model Makers, Chhatrapati Sambhajinagar";
+const description =
+  "Contact Disha Associates to discuss an architectural scale model. Based in Chhatrapati Sambhajinagar (Aurangabad), Maharashtra. Send your drawings and requirements for a project-specific quotation.";
+
+const jsonLd = [
+  breadcrumbNode([
+    { name: "Home", path: "/" },
+    { name: "Contact", path: "/contact/" },
+  ]),
+];
+---
+
+<BaseLayout title={title} description={description} path="/contact/" jsonLd={jsonLd}>
+  <PageHero
+    eyebrow="Contact"
+    title="Let's discuss your scale model"
+    lead="Send your drawings and requirements, or use the details below to get in touch. We will review your project and respond with advice and a quotation."
+    crumbs={[
+      { name: "Home", path: "/" },
+      { name: "Contact", path: "/contact/" },
+    ]}
+  />
+
+  {!hasVerifiedContact && (
+    <div class="container" style="padding-top: 2rem;">
+      <p class="notice notice--warning" role="note">
+        <strong>Contact details pending.</strong> Phone and email are awaiting confirmation
+        from the business owner. In the meantime you can visit the studio at the address
+        below or use the enquiry form.
+      </p>
+    </div>
+  )}
+
+  <section class="section" id="enquiry">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-col">
+          <h2>Studio &amp; contact details</h2>
+          <NapBlock />
+
+          <div class="map-embed-wrap" style="margin-top: 1.75rem;">
+            <MapEmbed />
+            <p class="field__hint" style="margin-top: 0.6rem;">
+              <a href={site.mapsDirectionsUrl} target="_blank" rel="noopener noreferrer">
+                Get directions <Icon name="external" size={14} />
+              </a>
+            </p>
+          </div>
+        </div>
+
+        <div class="contact-col">
+          <h2>Send an enquiry</h2>
+          <ContactForm />
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

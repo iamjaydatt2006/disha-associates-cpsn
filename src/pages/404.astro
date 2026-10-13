@@ -1,0 +1,32 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CtaBand from "../components/CtaBand.astro";
+import ServiceGrid from "../components/ServiceGrid.astro";
+
+const title = "Page not found | Disha Associates";
+const description =
+  "The page you were looking for could not be found. Explore Disha Associates' architectural scale model services instead.";
+---
+
+<BaseLayout title={title} description={description} path="/404/" noindex={true}>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Error 404</p>
+      <h1>We couldn't find that page</h1>
+      <p class="lead">
+        The page may have moved or the link may be incorrect. Let's get you back on track.
+      </p>
+      <div class="btn-group" style="margin-top: 1.5rem;">
+        <a class="btn btn--primary btn--lg" href="/">Back to Home</a>
+        <a class="btn btn--on-dark btn--lg" href="/contact/">Contact Us</a>
+      </div>
+    </div>
+  </section>
+
+  <ServiceGrid
+    eyebrow="Popular pages"
+    heading="Explore our model-making services"
+  />
+
+  <CtaBand />
+</BaseLayout>

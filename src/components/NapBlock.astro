@@ -1,0 +1,57 @@
+---
+import { site } from "../data/site";
+import Icon from "./Icon.astro";
+
+const phone = site.contact.phone;
+const email = site.contact.email;
+const whatsapp = site.contact.whatsapp;
+---
+
+<div class="nap">
+  <div class="nap__block">
+    <h3>Business name</h3>
+    <p>{site.name}</p>
+  </div>
+
+  <div class="nap__block">
+    <h3>Studio address</h3>
+    <address style="font-style: normal;">
+      {site.address.street},<br />
+      {site.address.locality}, {site.address.region} {site.address.postalCode},<br />
+      {site.address.country}
+    </address>
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem;">
+      Plus Code: {site.geo.plusCode}
+    </p>
+  </div>
+
+  <div class="nap__block">
+    <h3>Contact</h3>
+    {phone.verified && phone.value ? (
+      <a href={`tel:${phone.value.replace(/[^+\d]/g, "")}`}><Icon name="phone" size={16} /> {phone.value}</a>
+    ) : (
+      <p><span class="pending">Phone pending owner confirmation</span></p>
+    )}
+    {email.verified && email.value ? (
+      <a href={`mailto:${email.value}`}><Icon name="mail" size={16} /> {email.value}</a>
+    ) : (
+      <p style="margin-top: 0.4rem;"><span class="pending">Email pending owner confirmation</span></p>
+    )}
+    {whatsapp.verified && whatsapp.value && (
+      <p style="margin-top: 0.4rem;">
+        <a href={`https://wa.me/${whatsapp.value.replace(/[^\d]/g, "")}`} target="_blank" rel="noopener noreferrer">
+          <Icon name="whatsapp" size={16} /> WhatsApp
+        </a>
+      </p>
+    )}
+  </div>
+
+  <div class="nap__block">
+    <h3>Directions</h3>
+    <p>
+      <a href={site.mapsDirectionsUrl} target="_blank" rel="noopener noreferrer">
+        <Icon name="map-pin" size={16} /> Open in Google Maps
+      </a>
+    </p>
+  </div>
+</div>

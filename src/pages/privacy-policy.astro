@@ -1,0 +1,93 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import { site } from "../data/site";
+import { breadcrumbNode } from "../data/schema";
+
+const title = "Privacy Policy | Disha Associates";
+const description =
+  "How Disha Associates handles information submitted through the website, including enquiry form data and the use of Google Maps embeds.";
+
+const jsonLd = [
+  breadcrumbNode([
+    { name: "Home", path: "/" },
+    { name: "Privacy Policy", path: "/privacy-policy/" },
+  ]),
+];
+---
+
+<BaseLayout title={title} description={description} path="/privacy-policy/" jsonLd={jsonLd}>
+  <PageHero
+    eyebrow="Legal"
+    title="Privacy Policy"
+    lead="How Disha Associates handles information submitted through this website."
+    crumbs={[
+      { name: "Home", path: "/" },
+      { name: "Privacy Policy", path: "/privacy-policy/" },
+    ]}
+  />
+
+  <section class="section">
+    <div class="container form-wrap" style="max-width: 52rem;">
+      <p class="field__hint">Last updated: {new Date().toLocaleDateString("en-IN", { year: "numeric", month: "long" })}</p>
+
+      <div class="prose">
+        <p>
+          This website is operated by {site.name}, an architectural model-making studio
+          based in {site.address.locality}, {site.address.region}, {site.address.country}.
+          This policy explains what information the website collects and how it is used.
+        </p>
+
+        <h2>Information you provide</h2>
+        <p>
+          If you use the enquiry form or contact us by phone or email, you may provide your
+          name, company, email address, phone number, project details and any links you
+          choose to share. We use this information only to respond to your enquiry and to
+          discuss and deliver any work you engage us for.
+        </p>
+
+        <h2>How enquiry details are handled</h2>
+        <p>
+          Enquiry information is used solely to communicate with you about your project. We
+          do not sell or rent your information. Depending on how the form is configured, an
+          enquiry may be delivered by email or through a third-party form-delivery service;
+          in that case the third party's own privacy terms also apply.
+        </p>
+
+        <h2>Cookies and analytics</h2>
+        <p>
+          This website does not set advertising or tracking cookies of its own. If
+          analytics are enabled in future, this policy will be updated to describe them.
+        </p>
+
+        <h2>Embedded maps</h2>
+        <p>
+          The contact page embeds a Google Map to show our location. When the map loads,
+          Google may set cookies and collect data in line with
+          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
+            Google's privacy policy
+          </a>.
+        </p>
+
+        <h2>Data retention</h2>
+        <p>
+          Enquiry correspondence is retained only as long as needed to respond to you and,
+          where relevant, to keep a record of work carried out. You may ask us to delete
+          your enquiry details at any time.
+        </p>
+
+        <h2>Your choices</h2>
+        <p>
+          You can contact us to ask what information we hold about you, to correct it, or to
+          request that it be deleted. Use the contact details on our contact page.
+        </p>
+
+        <h2>Changes to this policy</h2>
+        <p>
+          We may update this policy from time to time. Any changes will be published on this
+          page.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

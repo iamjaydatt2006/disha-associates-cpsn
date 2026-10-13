@@ -1,0 +1,138 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import CtaBand from "../../components/CtaBand.astro";
+import FaqSection from "../../components/FaqSection.astro";
+import { guides, serviceLabels } from "../../data/guides";
+import { breadcrumbNode, articleNode, faqNode } from "../../data/schema";
+
+export function getStaticPaths() {
+  return guides.map((guide) => ({ params: { slug: guide.slug } }));
+}
+
+const { slug } = Astro.params;
+const guide = guides.find((g) => g.slug === slug);
+
+if (!guide) {
+  throw new Error(`Unknown guide slug: ${slug}`);
+}
+
+const path = `/guides/${guide.slug}/`;
+const crumbs = [
+  { name: "Home", path: "/" },
+  { name: "Guides", path: "/guides/" },
+  { name: guide.title, path },
+];
+
+const otherGuides = guides.filter((g) => g.slug !== guide.slug).slice(0, 3);
+
+const jsonLd = [
+  articleNode({
+    path,
+    headline: guide.title,
+    description: guide.description,
+    dateModified: guide.updated,
+    image: "/images/og-default.svg",
+  }),
+  breadcrumbNode(crumbs),
+  ...(guide.faqs && guide.faqs.length > 0 ? [faqNode(guide.faqs)] : []),
+];
+---
+
+<BaseLayout
+  title={guide.seoTitle}
+  description={guide.description}
+  path={path}
+  type="article"
+  jsonLd={jsonLd}
+>
+  <PageHero
+    eyebrow={`${guide.eyebrow} · ${guide.readingMinutes} min read`}
+    title={guide.title}
+    lead={guide.summary}
+    crumbs={crumbs}
+  />
+
+  <section class="section">
+    <div class="container">
+      <div class="prose" style="max-width: 68ch;">
+        {guide.intro.map((p) => <p class="lead">{p}</p>)}
+
+        {guide.sections.map((section) => (
+          <div>
+            <h2>{section.heading}</h2>
+            {section.paragraphs?.map((p) => <p>{p}</p>)}
+            {section.bullets && (
+              section.ordered ? (
+                <ol>{section.bullets.map((b) => <li>{b}</li>)}</ol>
+              ) : (
+                <ul>{section.bullets.map((b) => <li>{b}</li>)}</ul>
+              )
+            )}
+          </div>
+        ))}
+
+        {guide.takeaways && guide.takeaways.length > 0 && (
+          <aside class="callout" aria-label="Key takeaways">
+            <h2 style="margin-top: 0;">Key takeaways</h2>
+            <ul class="checklist">
+              {guide.takeaways.map((t) => (
+                <li>
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )}
+
+        <h2>Where to go next</h2>
+        <p>
+          Explore the model-making services this guide relates to, or
+          <a href="/contact/#enquiry">request a quotation</a> for your project.
+        </p>
+        <ul>
+          {guide.relatedServices.map((href) => (
+            <li>
+              <a href={href}>{serviceLabels[href] ?? href}</a>
+            </li>
+          ))}
+        </ul>
+
+        <p class="field__hint">
+          Last updated: <time datetime={guide.updated}>{guide.updated}</time>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {guide.faqs && guide.faqs.length > 0 && <FaqSection faqs={guide.faqs} id="guide-faqs" />}
+
+  {otherGuides.length > 0 && (
+    <section class="section section--gray" aria-labelledby="more-guides">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">More guides</p>
+          <h2 id="more-guides">Keep reading</h2>
+        </div>
+        <div class="grid grid--3">
+          {otherGuides.map((g) => (
+            <article class="card">
+              <div class="card__body">
+                <h3 style="font-size: 1.1rem;">{g.title}</h3>
+                <p>{g.summary}</p>
+                <a class="card__link" href={`/guides/${g.slug}/`}>
+                  Read the guide <span class="visually-hidden">: {g.title}</span>
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <CtaBand
+    heading="Ready to commission your model?"
+    text="Send us your drawings and requirements and we will advise on scale, detail and the most effective way to present your project."
+  />
+</BaseLayout>

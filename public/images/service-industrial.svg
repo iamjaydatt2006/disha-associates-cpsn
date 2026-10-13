@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Placeholder illustration of an industrial scale model">
+  <title>Placeholder illustration of an industrial scale model</title>
+  <defs>
+    <linearGradient id="bgF" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#171C24"/>
+      <stop offset="1" stop-color="#2A323F"/>
+    </linearGradient>
+    <radialGradient id="vigF" cx="0.5" cy="0.42" r="0.75">
+      <stop offset="0" stop-color="rgba(255,255,255,0.10)"/>
+      <stop offset="1" stop-color="rgba(0,0,0,0.28)"/>
+    </radialGradient>
+    <pattern id="gridF" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="rgba(248,247,243,0.05)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="900" fill="#1F2632"/>
+  
+  <rect x="0" y="0" width="1600" height="900" fill="url(#bgF)"/>
+  <rect x="0" y="0" width="1600" height="900" fill="url(#gridF)"/>
+  <rect x="0" y="0" width="1600" height="900" fill="url(#vigF)"/>
+  <rect x="14" y="14" width="1572" height="872" fill="none"
+    stroke="rgba(189,139,69,0.35)" stroke-width="1"/>
+  
+    <g stroke="#D8B57E" fill="none" stroke-width="2.5">
+      <path d="M420 700 L1200 700 L1200 640 L420 640 Z" fill="rgba(189,139,69,0.10)"/>
+      <!-- sawtooth roof -->
+      <path d="M470 640 L470 520 L590 580 L590 640 M590 640 L590 520 L710 580 L710 640
+               M710 640 L710 520 L830 580 L830 640 M830 640 L830 520 L950 580 L950 640"
+        fill="rgba(248,247,243,0.04)"/>
+      <!-- silo / chimney -->
+      <rect x="1000" y="360" width="60" height="280" fill="rgba(248,247,243,0.05)"/>
+      <path d="M1000 360 L1030 320 L1060 360"/>
+      <rect x="1090" y="440" width="70" height="200" fill="rgba(248,247,243,0.04)"/>
+      <path d="M470 640 L470 600 L950 600"/>
+    </g>
+  
+  <g>
+    <rect x="40" y="40" rx="4" width="220" height="38"
+      fill="rgba(189,139,69,0.16)" stroke="#BD8B45" stroke-width="1"/>
+    <text x="64" y="65" fill="#D8B57E" font-family="ui-sans-serif, system-ui, sans-serif"
+      font-size="17" font-weight="700" letter-spacing="1.5">PLACEHOLDER</text>
+  </g>
+  <text x="1552" y="846" text-anchor="end"
+    fill="rgba(248,247,243,0.55)" font-family="ui-sans-serif, system-ui, sans-serif" font-size="19">
+    Replace with a real photograph · 1600×900 · WebP/AVIF
+  </text>
+</svg>

@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# OWNER-TODO: if the production domain changes (src/data/site.ts → baseUrl),
+# update the Sitemap URL below to match.
+Sitemap: https://dishaassociatescpsn.pages.dev/sitemap.xml
